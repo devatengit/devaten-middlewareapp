@@ -1,0 +1,49 @@
+version: '3'
+services:
+
+  middleware:
+    image: devaten/devaten-middleware-prometheus:latest
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    env_file: middleware.env
+    container_name: devaten-middleware-prometheus
+    depends_on: 
+      - prometheus
+    restart: always
+    ports:
+      - 8999:8999
+      - 9091:9091
+    networks:
+      - middleware
+
+  prometheus:
+    image: prom/prometheus:v2.1.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - middleware
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - middleware
+
+networks:
+  middleware:
+    name: middleware
+
+volumes:
+  prometheus_data: {}
+  grafana-data: {}
