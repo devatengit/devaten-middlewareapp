@@ -165,13 +165,12 @@ func CreateStopMetrics(arr []string) {
 					}, []string{
 						"database",
 						"usecase",
-						"starttimestamp",
 					},
 				)
 				prometheus.MustRegister(
 					stopmetrics["STOP_"+strings.ToUpper(arr[x])+"_"+databasetype+"_GAUGE"],
 				)
-				stopmetrics["STOP_"+strings.ToUpper(arr[x])+"_"+databasetype+"_GAUGE"].WithLabelValues("database", "usecase", "startimestamp").Set(0)
+				stopmetrics["STOP_"+strings.ToUpper(arr[x])+"_"+databasetype+"_GAUGE"].WithLabelValues("database", "usecase").Set(0)
 			}
 
 		}
@@ -184,7 +183,6 @@ func RecordStopMetrics(body []byte) {
 	for _, v := range value10 {
 		for key, val := range v.Map() {
 			err := json.Unmarshal([]byte(val.Raw), &stopdetails)
-			starttimestamp = stopdetails[0].Starttimestamp
 			if err != nil {
 				panic(err)
 			}
@@ -203,7 +201,7 @@ func RecordStopMetrics(body []byte) {
 	for key, element := range usecasestopmetrics {
 		myMap := element.(map[string]float64)
 		for columnname, value := range myMap {
-			stopmetrics[columnname].WithLabelValues(strings.ToUpper(databasetype), key, starttimestamp).Set(value)
+			stopmetrics[columnname].WithLabelValues(strings.ToUpper(databasetype), key).Set(value)
 		}
 	}
 
@@ -315,7 +313,6 @@ func TableanalysisReportReg(body []byte) {
 					}, []string{
 						"database",
 						"tablename",
-						"starttimestamp",
 					},
 				)
 				prometheus.MustRegister(
@@ -335,7 +332,7 @@ func TableanalysisReport(body []byte) {
 			colname := "TABLEANALYSISDATA_" + strings.ToUpper(tablecolumn) + "_" + databasetype + "_GAUGE"
 			if key != "TABLE_NAME" {
 				tableval := val.Float()
-				tableanalysismetrics[colname].WithLabelValues(strings.ToUpper(databasetype), reportval.Map()["TABLE_NAME"].String(), starttimestamp).Set(tableval)
+				tableanalysismetrics[colname].WithLabelValues(strings.ToUpper(databasetype), (reportval.Map()["TABLE_NAME"].String())).Set(tableval)
 			}
 		}
 	}
