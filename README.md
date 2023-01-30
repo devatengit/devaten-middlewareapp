@@ -32,12 +32,7 @@ Add into your configure file your IP address where docker is runnig.
 Exmple
 
 Wireless LAN adapter Wi-Fi:
-
-   Connection-specific DNS Suffix  . :
-   Link-local IPv6 Address . . . . . : fe80::b1d9:e804:61bc:f6ab%2
    IPv4 Address. . . . . . . . . . . : 192.168.1.9
-   Subnet Mask . . . . . . . . . . . : 255.255.255.0
-   Default Gateway . . . . . . . . . : 192.168.1.1
 -->
 APP_HOST="http://192.168.1.9:8081"
 
