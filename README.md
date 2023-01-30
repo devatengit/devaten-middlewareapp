@@ -36,7 +36,7 @@ Wireless LAN adapter Wi-Fi:
 -->
 APP_HOST="http://192.168.1.9:8081"
 
-Afgter this check verify that devaten is runnig on this address.
+After change verify devaten is running on this same address.http://192.168.1.9:8081
 
 2. Run
 To start program open a terminal and navigate to the folder containing the docker compose file.
