@@ -29,14 +29,14 @@ This will download the docker images locally.
 
 Add into your configure file your IP address where docker is runnig.
 
-Exmple
+Example
 
-Wireless LAN adapter Wi-Fi:
-   IPv4 Address. . . . . . . . . . . : 192.168.1.9
--->
+IPv4 Address.: 192.168.1.9
+
+edit middleware.env-->
 APP_HOST="http://192.168.1.9:8081"
 
-After change verify devaten is running on this same address.http://192.168.1.9:8081
+After change verify devaten is running on this same address. http://192.168.1.9:8081
 
 2. Run
 To start program open a terminal and navigate to the folder containing the docker compose file.
