@@ -23,8 +23,27 @@ Write the following command:
 
 This will download the docker images locally.
 
-## How to Run
+## How to Configure & Run
 
+1. Configure middleware.env file
+
+Add into your configure file your IP address where docker is runnig.
+
+Exmple
+
+Wireless LAN adapter Wi-Fi:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::b1d9:e804:61bc:f6ab%2
+   IPv4 Address. . . . . . . . . . . : 192.168.1.9
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.1.1
+-->
+APP_HOST="http://192.168.1.9:8081"
+
+Afgter this check verify that devaten is runnig on this address.
+
+2. Run
 To start program open a terminal and navigate to the folder containing the docker compose file.
 Write following command:
 ```docker-compose up```
@@ -46,6 +65,8 @@ Once the middleware is up and running, you can do the following API calls, API c
 ```
 localhost:8999/Login/{Devaten Username}/{Devaten Password}
 ```
+eg
+http://localhost:8999/Login/admin@system.com/123456
 
 This call must be made as the first API call, or it will not be possible to start or stop a recording.
 
@@ -58,16 +79,22 @@ If the image is ever shut down, you must log in again when you restart the progr
 ```
 localhost:8999/Start/{Usecase name}/{Application Identifier}
 ```
+http://localhost:8999/Start/getCustomer/861632a7-7fde-46a1-b62b-eae111d00115
 
-**Usecase name** can be anything that you choose.
+
+**Usecase name** can be anything that you choose. eg , Jmeter test this could your test suite name. 
 
 **Application Identifier** can be found in Devaten, under *Applications* and *Application Management.*
+
+eg. 861632a7-7fde-46a1-b62b-eae111d00115
+
 
 ### Stop Recording
 
 ```
 localhost:8999/Start/{Usecase name}/{Application Identifier}
 ```
+http://localhost:8999/Stop/getCustomer/861632a7-7fde-46a1-b62b-eae111d00115
 
 **Usecase name** has to be the same as the name used to start the recording.
 
