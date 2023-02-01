@@ -93,12 +93,13 @@ func startRecording(c *gin.Context) {
 	if res.StatusCode == 200 {
 		PrepareStopMetrics(command.ApplicationIdentifier)
 		c.JSON(res.StatusCode, gin.H{"Control": "A recording has now started"})
+		go scrapeWithInterval(command)
 	} else {
 		c.JSON(res.StatusCode, gin.H{"Control": "There is some problem in Start Recording"})
 	}
 
 	// Starts the scraping on a seperat thread
-	go scrapeWithInterval(command)
+
 }
 
 // @BasePath /Stop/{Usecase}/{Appiden}
@@ -193,7 +194,7 @@ func getAuthToken(c *gin.Context) {
 	}
 
 	fmt.Println("******************************************** Auth Token ********************************************")
-	fmt.Printf("%s : %s\n", Tokenresponse.Type, Tokenresponse.AccessToken)
+	//fmt.Printf("%s : %s\n", Tokenresponse.Type, Tokenresponse.AccessToken)
 }
 
 func Operation(usecase string, action string, applicationIdentifier string) *http.Response {
@@ -226,7 +227,7 @@ func Operation(usecase string, action string, applicationIdentifier string) *htt
 		}
 	}
 	defer res.Body.Close()
-	fmt.Println(res.Body)
+	//fmt.Println(res.Body)
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -277,7 +278,7 @@ func StopRecordingdata(usecase string, applicationIdentifier string) *http.Respo
 
 	defer res.Body.Close()
 
-	fmt.Println(res.Body)
+	//fmt.Println(res.Body)
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -290,16 +291,16 @@ func StopRecordingdata(usecase string, applicationIdentifier string) *http.Respo
 	if responsecode == 200 {
 		monitoring.RecordStopMetrics(body)
 		report := gjson.Get(string(body), "reportLink")
-		fmt.Println(report)
+		//fmt.Println(report)
 		lastBin := strings.LastIndex(report.String(), "view")
 
-		fmt.Println(report.String()[lastBin+5 : len(report.String())])
+		//fmt.Println(report.String()[lastBin+5 : len(report.String())])
 		reporturl := report.String()[lastBin+5 : len(report.String())]
 
 		reportdata(reporturl, applicationIdentifier)
 		idNum := strings.Split(reporturl, "/")
 
-		fmt.Println(idNum[1])
+		//fmt.Println(idNum[1])
 
 		tableanalysisdata(idNum[1], idNum[0], applicationIdentifier)
 	} else {
@@ -408,7 +409,7 @@ func reportdata(usecase string, applicationIdentifier string) *http.Response {
 
 }
 func PrepareStopMetrics(applicationIdentifier string) *http.Response {
-	fmt.Println("line no 1")
+
 	url := appurl + "/devaten/data/getAlertConfigInfoByApplicationIdentifier"
 	method := "GET"
 
@@ -427,7 +428,7 @@ func PrepareStopMetrics(applicationIdentifier string) *http.Response {
 	req.Header.Add("applicationIdentifier", applicationIdentifier)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+Tokenresponse.AccessToken)
-	fmt.Println("line no 2")
+
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
