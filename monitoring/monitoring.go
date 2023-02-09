@@ -51,6 +51,8 @@ func ParseBody(body []byte, action string) {
 		idnum = strconv.FormatInt(int64(idnumv), 10)
 		usecase := gjson.Get(string(body), "data.usecaseIdentifier").String()
 		usecaseId = usecase
+		starttimestampdata := gjson.Get(string(body), "data.starttimestamp").String()
+		starttimestamp = starttimestampdata
 		fmt.Println(idnum)
 		startdataresponse := gjson.Get(string(body), "data.dataSourceList.#.databaseType").Array()
 		databasetype = strings.ToUpper(startdataresponse[0].String())
@@ -72,6 +74,7 @@ func ParseBody(body []byte, action string) {
 							"databaseName",
 							"idNum",
 							"usecase",
+							"starttimestamp",
 						},
 					)
 
@@ -79,7 +82,7 @@ func ParseBody(body []byte, action string) {
 						dbinstancemetrics["DBINSTANCE_"+strings.ToUpper(key)],
 					)
 				}
-				dbinstancemetrics["DBINSTANCE_"+strings.ToUpper(key)].With(prometheus.Labels{"database": strings.ToUpper(databasetype), "databaseName": databasename, "idNum": idnum, "usecase": usecaseId}).Set(val.Float())
+				dbinstancemetrics["DBINSTANCE_"+strings.ToUpper(key)].With(prometheus.Labels{"database": strings.ToUpper(databasetype), "databaseName": databasename, "idNum": idnum, "usecase": usecaseId, "starttimestamp": starttimestamp}).Set(val.Float())
 			}
 		}()
 	}
@@ -87,8 +90,8 @@ func ParseBody(body []byte, action string) {
 	if action == "run" {
 		runinfo := gjson.Get(string(body), "data.runSituationResult.#.data").Array()
 		//go func() {
-		starttimestampdata := runinfo[0].Map()["starttimestamp"].String()
-		starttimestamp = starttimestampdata
+		//starttimestampdata := runinfo[0].Map()["starttimestamp"].String()
+		//starttimestamp = starttimestampdata
 		for _, run := range runinfo {
 			for key, val := range run.Map() {
 				fmt.Print(" ", val)

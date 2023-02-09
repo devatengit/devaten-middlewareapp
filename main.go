@@ -95,7 +95,8 @@ func startRecording(c *gin.Context) {
 		c.JSON(res.StatusCode, gin.H{"Control": "A recording has now started"})
 		go scrapeWithInterval(command)
 	} else {
-		c.JSON(res.StatusCode, gin.H{"Control": "There is some problem in Start Recording"})
+		var error1 = res.Proto
+		c.JSON(res.StatusCode, gin.H{"Control": error1})
 	}
 
 	// Starts the scraping on a seperat thread
@@ -130,7 +131,8 @@ func stopRecording(c *gin.Context) {
 	if res.StatusCode == 200 {
 		c.JSON(res.StatusCode, gin.H{"Control": "A recording has now ended"})
 	} else {
-		c.JSON(res.StatusCode, gin.H{"Control": "There is some problem in Stop Recording"})
+		var error1 = res.Proto
+		c.JSON(res.StatusCode, gin.H{"Control": error1})
 	}
 
 }
@@ -241,6 +243,7 @@ func Operation(usecase string, action string, applicationIdentifier string) *htt
 		monitoring.ParseBody(body, action)
 	} else {
 		res.StatusCode = 500
+		res.Proto = gjson.Get(string(body), "errorMessage").String()
 	}
 
 	return res
@@ -305,6 +308,7 @@ func StopRecordingdata(usecase string, applicationIdentifier string) *http.Respo
 		tableanalysisdata(idNum[1], idNum[0], applicationIdentifier)
 	} else {
 		res.StatusCode = 500
+		res.Proto = gjson.Get(string(body), "errorMessage").String()
 	}
 	return res
 
