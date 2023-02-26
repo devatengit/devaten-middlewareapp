@@ -21,6 +21,7 @@ var (
 	mostexecutedmetrics  = make(map[string]*prometheus.GaugeVec)
 	worstexecutedmetrics = make(map[string]*prometheus.GaugeVec)
 	tableanalysismetrics = make(map[string]*prometheus.GaugeVec)
+	whoisacticemetrics   = make(map[string]*prometheus.GaugeVec)
 	usecaseidentifiers   string
 	appclassname         string
 	appipaddress         string
@@ -355,6 +356,112 @@ func TableanalysisReportReg(body []byte) {
 	}
 
 }
+
+func WhoIsActive(body []byte) {
+
+	runinfo := gjson.Get(string(body), "map").Map()
+	//go func() {
+	//starttimestampdata := runinfo[0].Map()["starttimestamp"].String()
+	//starttimestamp = starttimestampdata
+	for key1, val1 := range runinfo {
+		//for _, active := range val1.Array() {
+		justString := GetPrometheusRegisteredMetrics()
+		for key, val := range val1.Array()[0].Map() {
+			fmt.Print(" ", val)
+
+			if !strings.Contains(key, "LABEL_") {
+				fmt.Println(key1)
+				fmt.Println(key)
+				registered := strings.Contains(justString, "WHOISACTIVE_"+strings.ToUpper(key))
+				fmt.Println(registered)
+				if !registered {
+					whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)] = prometheus.NewGaugeVec(
+						prometheus.GaugeOpts{
+							Name: "WHOISACTIVE_" + strings.ToUpper(key),
+							Help: "",
+						}, []string{
+							"DatabaseUser",
+							"Connection_ID",
+							"DBName",
+							"HostName",
+							"LAST_ACTION_TIME",
+							"Application",
+							"Statement_status",
+							"Last_action",
+							"QueryId",
+							"WaitType",
+							"BlockedByConnectionID",
+						},
+					)
+					prometheus.MustRegister(
+						whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)],
+					)
+
+				}
+			}
+		}
+
+		//}
+		fmt.Println()
+	}
+	for key1, val1 := range runinfo {
+		fmt.Print(key1)
+		for _, active := range val1.Array() {
+			var activedata = active.Map()
+			LABEL_DATABASEUSER, ok := activedata["LABEL_DATABASEUSER"]
+			fmt.Print(ok)
+			LABEL_CONNECTION_ID, ok := activedata["LABEL_CONNECTION_ID"]
+			fmt.Print(ok)
+			LABEL_DBNAME, ok := activedata["LABEL_DBNAME"]
+			fmt.Print(ok)
+			LABEL_HOSTNAME, ok := activedata["LABEL_HOSTNAME"]
+			fmt.Print(ok)
+			LABEL_LAST_ACTION_TIME, ok := activedata["LABEL_LAST_ACTION_TIME"]
+			fmt.Print(ok)
+
+			LABEL_APPLICATION, ok := activedata["LABEL_APPLICATION"]
+			fmt.Print(ok)
+
+			LABEL_STATEMENT_STATUS, ok := activedata["LABEL_STATEMENT_STATUS"]
+			fmt.Print(ok)
+
+			LABEL_LAST_ACTION, ok := activedata["LABEL_LAST_ACTION"]
+			fmt.Print(ok)
+
+			LABEL_QUERYID, ok := activedata["LABEL_QUERYID"]
+			fmt.Print(ok)
+
+			LABEL_WAITTYPE, ok := activedata["LABEL_WAITTYPE"]
+			fmt.Print(ok)
+
+			LABEL_BLOCKEDBYCONNECTIONID, ok := activedata["LABEL_BLOCKEDBYCONNECTIONID"]
+			fmt.Print(ok)
+
+			for key, val := range active.Map() {
+				if !strings.Contains(key, "LABEL_") {
+					whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)].With(prometheus.Labels{"DatabaseUser": LABEL_DATABASEUSER.String(), "Connection_ID": LABEL_CONNECTION_ID.String(), "DBName": LABEL_DBNAME.String(), "HostName": LABEL_HOSTNAME.String(), "LAST_ACTION_TIME": LABEL_LAST_ACTION_TIME.String(), "Statement_status": LABEL_APPLICATION.String(), "Application": LABEL_STATEMENT_STATUS.String(), "Last_action": LABEL_LAST_ACTION.String(), "QueryId": LABEL_QUERYID.String(), "WaitType": LABEL_WAITTYPE.String(), "BlockedByConnectionID": LABEL_BLOCKEDBYCONNECTIONID.String()}).Set(val.Float())
+				}
+			}
+		}
+	}
+	//}()
+
+}
+
+//	func TableanalysisReport(body []byte) {
+//		tablereport := gjson.Get(string(body), "data").Array()
+//		for _, v := range tablereport {
+//			reportval := v
+//			for key, val := range reportval.Map() {
+//				tablecolumn := key
+//				colname := "TABLEANALYSISDATA_" + strings.ToUpper(tablecolumn) + "_" + databasetype
+//				if key != "TABLE_NAME" {
+//					tableval := val.Float()
+//					tableanalysismetrics[colname].WithLabelValues(strings.ToUpper(databasetype), (reportval.Map()["TABLE_NAME"].String()), usecaseId, starttimestamp).Set(tableval)
+//				}
+//			}
+//		}
+//	}
 func TableanalysisReport(body []byte) {
 	tablereport := gjson.Get(string(body), "data").Array()
 	for _, v := range tablereport {

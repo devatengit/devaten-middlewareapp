@@ -36,7 +36,8 @@ var (
 		Closes the goroutine that scrapes the recording.
 		The goroutine is started when the user starts the recording
 	*/
-	quit = make(chan bool)
+	//quit = make(chan bool)
+	stopInterval = false
 )
 
 func main() {
@@ -86,7 +87,7 @@ func startRecording(c *gin.Context) {
 		return
 	}
 	fmt.Println(command.ApplicationIdentifier)
-
+	stopInterval = false
 	var res = Operation(command.Usecase, "start", command.ApplicationIdentifier)
 
 	fmt.Println(res.StatusCode)
@@ -123,12 +124,14 @@ func stopRecording(c *gin.Context) {
 		c.JSON(400, gin.H{"msg": err})
 		return
 	}
+
+	go scrapeWithIntervalforactive(command)
 	// Sends true through the quit channel to the goroutine that is scraping the recording
-	quit <- true
 
 	var res = StopRecordingdata(command.Usecase, command.ApplicationIdentifier)
 	fmt.Println(res.StatusCode)
 	if res.StatusCode == 200 {
+
 		c.JSON(res.StatusCode, gin.H{"Control": "A recording has now ended"})
 	} else {
 		var error1 = res.Proto
@@ -249,6 +252,57 @@ func Operation(usecase string, action string, applicationIdentifier string) *htt
 	return res
 
 }
+
+func OperationWhoIsActive(applicationIdentifier string) *http.Response {
+	url := appurl + "/devaten/data/getwhoIsActiveInformation"
+	method := "GET"
+	// applicationIdentifier1 := applicationIdentifier
+	// applicationIdentifier1 = strings.Replace(applicationIdentifier1, "\n", "", -1)
+
+	payload := strings.NewReader("")
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+
+	if err != nil {
+		fmt.Println(err)
+		return &http.Response{
+			Status:     err.Error(),
+			StatusCode: 500,
+		}
+	}
+	req.Header.Add("applicationIdentifier", applicationIdentifier)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer "+Tokenresponse.AccessToken)
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return &http.Response{
+			Status:     err.Error(),
+			StatusCode: 500,
+		}
+	}
+	defer res.Body.Close()
+	//fmt.Println(res.Body)
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return &http.Response{
+			Status:     err.Error(),
+			StatusCode: 500,
+		}
+	}
+	responsecode := gjson.Get(string(body), "responseCode").Int()
+	if responsecode == 200 {
+		monitoring.WhoIsActive(body)
+	} else {
+		res.StatusCode = 500
+		res.Proto = gjson.Get(string(body), "errorMessage").String()
+	}
+
+	return res
+
+}
 func StopRecordingdata(usecase string, applicationIdentifier string) *http.Response {
 	url := appurl + "/devaten/data/stopRecording?usecaseIdentifier=" + usecase + "&inputSource=application&frocefullyStop=false"
 	method := "GET"
@@ -310,6 +364,8 @@ func StopRecordingdata(usecase string, applicationIdentifier string) *http.Respo
 		res.StatusCode = 500
 		res.Proto = gjson.Get(string(body), "errorMessage").String()
 	}
+	//quit <- true
+	stopInterval = true
 	return res
 
 }
@@ -487,11 +543,42 @@ Will every 5 seconds do the run operation, which returns some information about 
 */
 func scrapeWithInterval(command storage.StartAndStopCommand) {
 	for {
-		select {
-		case <-quit:
+		// select {
+		// case <-quit:
+		// 	return
+		// default:
+		// 	Operation(command.Usecase, "run", command.ApplicationIdentifier)
+		// }
+		if stopInterval {
 			return
-		default:
+		} else {
 			Operation(command.Usecase, "run", command.ApplicationIdentifier)
+		}
+		time.Sleep(5 * time.Second)
+
+	}
+}
+
+func scrapeWithIntervalforactive(command storage.StartAndStopCommand) {
+	for {
+		// select {
+		// case <-quit:
+		// 	return
+		// default:
+		// 	if !quit
+		// 	OperationWhoIsActive(command.ApplicationIdentifier)
+		// }
+		// switch {
+		// case <-quit:
+		// 	return
+		// default:
+
+		// }
+
+		if stopInterval {
+			return
+		} else {
+			OperationWhoIsActive(command.ApplicationIdentifier)
 		}
 		time.Sleep(5 * time.Second)
 
