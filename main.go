@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -30,8 +32,16 @@ var (
 		Instantiated when a user calls the login API call.
 		Contains the authentication token
 	*/
-	Tokenresponse storage.Token
-	appurl        = ""
+	Tokenresponse     storage.Token
+	appurl                  = ""
+	recordingmail           = ""
+	explainjson             = ""
+	jira                    = ""
+	report                  = ""
+	loginusername           = ""
+	password                = ""
+	loginresponse           = 0
+	scrapintervaltime int64 = 5
 	/*
 		Closes the goroutine that scrapes the recording.
 		The goroutine is started when the user starts the recording
@@ -47,38 +57,43 @@ func main() {
 		log.Fatalf("Error loading .env file")
 	}
 	apphost := os.Getenv("APP_HOST")
+	recordingmaile := os.Getenv("RECORDING_MAIL")
+	recordingmail = recordingmaile
+	explainjsone := os.Getenv("EXPLAIN_JSON")
+	explainjson = explainjsone
+	jirae := os.Getenv("JIRA")
+	jira = jirae
+	reporte := os.Getenv("REPORT")
+	report = reporte
+
+	userdata := os.Getenv("LOGIN_USER_NAME")
+	loginusername = userdata
+
+	pass := os.Getenv("PASSWORD")
+	password = pass
+
+	scrapintervaltimee := os.Getenv("SCRAP_INTERVAL_TIME")
+	//scrapintervaltime=scrapintervaltimee
+	scrapintervaltime, err = strconv.ParseInt(scrapintervaltimee, 16, 64)
+
+	fmt.Println(scrapintervaltime, err, reflect.TypeOf(scrapintervaltime))
+
 	appurl = apphost
 	fmt.Println(appurl)
 	go monitoring.Monitor()
 	docs.SwaggerInfo.BasePath = ""
 	router := gin.Default()
 
-	// getting env variables SITE_TITLE and
-	// The API calls
-	router.GET("/Login/:Username/:Password", getAuthToken)
 	router.GET("/Start/:Usecase/:Appiden", startRecording)
 	router.GET("/Stop/:Usecase/:Appiden", stopRecording)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	// Starts the program
+
 	err1 := router.Run(":8999")
 	if err1 != nil {
 		return
 	}
 }
 
-// @BasePath /Start/{Usecase}/{Appiden}
-
-// PingExample godoc
-// @Summary Start a recording
-// @Schemes
-// @Description This endpoint is to stop a recording and needs a usecase and a applicationIdentifier as parameters.
-// @Tags example
-// @Param Usecase path string true ":Usecase"
-// @Param Appiden path string true ":Appiden"
-// @Accept json
-// @Produce json
-// @Success 200
-// @Router /Start/{Usecase}/{Appiden} [get]
 func startRecording(c *gin.Context) {
 	// Creates the command structure by taking information from the URL call
 	var command storage.StartAndStopCommand
@@ -86,37 +101,38 @@ func startRecording(c *gin.Context) {
 		c.JSON(400, gin.H{"msg": err})
 		return
 	}
+	fmt.Println(loginusername)
+	fmt.Println(password)
+	go scrapeWithIntervalForLogin(loginusername, password)
+
 	fmt.Println(command.ApplicationIdentifier)
 	stopInterval = false
-	var res = Operation(command.Usecase, "start", command.ApplicationIdentifier)
+	time.Sleep(5 * time.Second)
+	if loginresponse == 200 {
 
-	fmt.Println(res.StatusCode)
-	if res.StatusCode == 200 {
-		PrepareStopMetrics(command.ApplicationIdentifier)
-		c.JSON(res.StatusCode, gin.H{"Control": "A recording has now started"})
-		go scrapeWithInterval(command)
+		c.JSON(loginresponse, gin.H{"Control": "Login Successfully."})
+		var res = Operation(command.Usecase, "start", command.ApplicationIdentifier)
+
+		fmt.Println(res.StatusCode)
+		if res.StatusCode == 200 {
+			PrepareStopMetrics(command.ApplicationIdentifier)
+			c.JSON(res.StatusCode, gin.H{"Control": "A recording has now started"})
+			go scrapeWithInterval(command)
+			go scrapeWithIntervalforactive(command)
+		} else {
+			var error1 = res.Proto
+			c.JSON(res.StatusCode, gin.H{"Control": error1})
+		}
+
 	} else {
-		var error1 = res.Proto
-		c.JSON(res.StatusCode, gin.H{"Control": error1})
+
+		c.JSON(loginresponse, gin.H{"Control": "Login fail. Check username and password or dashborad app ip address."})
 	}
 
 	// Starts the scraping on a seperat thread
 
 }
 
-// @BasePath /Stop/{Usecase}/{Appiden}
-
-// PingExample godoc
-// @Summary Stop a recording
-// @Schemes
-// @Description This endpoint is to stop a recording and needs a usecase and a applicationIdentifier as parameters.
-// @Tags example
-// @Param Usecase path string true ":Usecase"
-// @Param Appiden path string true ":Appiden"
-// @Accept json
-// @Produce json
-// @Success 200
-// @Router /Stop/{Usecase}/{Appiden} [get]
 func stopRecording(c *gin.Context) {
 	// Creates the command structure by taking information from the URL call
 	var command storage.StartAndStopCommand
@@ -125,9 +141,8 @@ func stopRecording(c *gin.Context) {
 		return
 	}
 
-	go scrapeWithIntervalforactive(command)
 	// Sends true through the quit channel to the goroutine that is scraping the recording
-
+	go scrapeWithIntervalForLogin(loginusername, password)
 	var res = StopRecordingdata(command.Usecase, command.ApplicationIdentifier)
 	fmt.Println(res.StatusCode)
 	if res.StatusCode == 200 {
@@ -140,38 +155,21 @@ func stopRecording(c *gin.Context) {
 
 }
 
-// @BasePath /Login/{Username}/{Password}
-
-// PingExample godoc
-// @Summary Send middleware user information
-// @Schemes
-// @Description this is a request to give the middleware user information. this will allow the middleware to set up the authentication token need to start and stop the recording.
-// @Tags example
-// @Param Username path string true ":Username"
-// @Param Password path string true ":Password"
-// @Produce json
-// @Success 200
-// @Router /Login/{Username}/{Password} [get]
-func getAuthToken(c *gin.Context) {
+func getAuthToken(loginusername string, password string) *http.Response {
 	var url = appurl + "/oauth/token"
 	method := "POST"
 
-	// Creates the command structure by taking information from the URL call
-	var command storage.LoginCommand
-	if err := c.ShouldBindUri(&command); err != nil {
-		c.JSON(400, gin.H{"msg": err})
-		return
-	}
-
-	// Generates the user info string
-	payload := strings.NewReader(generateUserInfo(command.Username, command.Password))
+	payload := strings.NewReader(generateUserInfo(loginusername, password))
 
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, payload)
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		return &http.Response{
+			Status:     err.Error(),
+			StatusCode: 500,
+		}
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Authorization", authToken)
@@ -179,27 +177,35 @@ func getAuthToken(c *gin.Context) {
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return &http.Response{
+			Status:     err.Error(),
+			StatusCode: 500,
+		}
 	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return &http.Response{
+			Status:     err.Error(),
+			StatusCode: 500,
+		}
 	}
 	err = json.Unmarshal(body, &Tokenresponse)
 	if err != nil {
-		return
-	}
-	if res.StatusCode == 200 {
-		c.JSON(res.StatusCode, gin.H{"Control": "Login successfully."})
-	} else {
-		c.JSON(res.StatusCode, gin.H{"Control": "There is some problem in Login."})
+		return &http.Response{
+			Status:     err.Error(),
+			StatusCode: 500,
+		}
 	}
 
+	fmt.Printf("%s : %s\n", Tokenresponse.Type, Tokenresponse.AccessToken)
+	loginresponse = res.StatusCode
+
 	fmt.Println("******************************************** Auth Token ********************************************")
-	//fmt.Printf("%s : %s\n", Tokenresponse.Type, Tokenresponse.AccessToken)
+
+	return res
 }
 
 func Operation(usecase string, action string, applicationIdentifier string) *http.Response {
@@ -209,7 +215,7 @@ func Operation(usecase string, action string, applicationIdentifier string) *htt
 	// applicationIdentifier1 = strings.Replace(applicationIdentifier1, "\n", "", -1)
 
 	payload := strings.NewReader("")
-
+	//fmt.Println(url)
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, payload)
 
@@ -256,11 +262,7 @@ func Operation(usecase string, action string, applicationIdentifier string) *htt
 func OperationWhoIsActive(applicationIdentifier string) *http.Response {
 	url := appurl + "/devaten/data/getwhoIsActiveInformation"
 	method := "GET"
-	// applicationIdentifier1 := applicationIdentifier
-	// applicationIdentifier1 = strings.Replace(applicationIdentifier1, "\n", "", -1)
-
 	payload := strings.NewReader("")
-
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, payload)
 
@@ -304,7 +306,7 @@ func OperationWhoIsActive(applicationIdentifier string) *http.Response {
 
 }
 func StopRecordingdata(usecase string, applicationIdentifier string) *http.Response {
-	url := appurl + "/devaten/data/stopRecording?usecaseIdentifier=" + usecase + "&inputSource=application&frocefullyStop=false"
+	url := appurl + "/devaten/data/stopRecording?usecaseIdentifier=" + usecase + "&recordingMail=" + recordingmail + "&explainJson=" + explainjson + "&jira=" + jira + "&report=" + report + "&inputSource=application&frocefullyStop=false"
 	method := "GET"
 
 	payload := strings.NewReader("")
@@ -423,9 +425,6 @@ func tableanalysisdata(idNum string, usecase string, applicationIdentifier strin
 func reportdata(usecase string, applicationIdentifier string) *http.Response {
 	url := appurl + "/userMgt/report/" + usecase
 	method := "GET"
-	// applicationIdentifier1 := applicationIdentifier
-	// applicationIdentifier1 = strings.Replace(applicationIdentifier1, "\n", "", -1)
-
 	payload := strings.NewReader("")
 	fmt.Println(usecase)
 	client := &http.Client{}
@@ -459,12 +458,7 @@ func reportdata(usecase string, applicationIdentifier string) *http.Response {
 			StatusCode: 500,
 		}
 	}
-	//fmt.Println(string(body))
-	//responsecode := gjson.Get(string(body), "responseCode").Int()
-	//if responsecode == 200 {
 	monitoring.RecordReport(body)
-	//}
-
 	return res
 
 }
@@ -497,11 +491,8 @@ func PrepareStopMetrics(applicationIdentifier string) *http.Response {
 			StatusCode: 500,
 		}
 	}
-	//value10 :=gjson.Get(res,"data.#.columnName")
 	defer res.Body.Close()
-	//fmt.Println(res.Body)
 	body, err := ioutil.ReadAll(res.Body)
-
 	if err != nil {
 		fmt.Println(err)
 		return &http.Response{
@@ -510,26 +501,11 @@ func PrepareStopMetrics(applicationIdentifier string) *http.Response {
 		}
 	}
 
-	//var resultdatagot []string
-
 	var resultdata []string
 	value10 := gjson.Get(string(body), "data.#.columnName").Array()
-	//value10 := gjson.Parse(string(body)).Get("data").Array()
 	for _, v := range value10 {
 		resultdata = append(resultdata, v.Str)
 	}
-
-	// var results []map[string]interface{}
-	// json.Unmarshal([]byte(body), &results)
-	// for key, result := range results {
-	// 	data := result["data"].(map[string]interface{})
-	// 	fmt.Println("Reading Value for Key :", key, data)
-	// 	//Reading each value by its key
-	// 	//for key1, result1 := range data {
-
-	// 	//fmt.Println(data["columnName"])
-	// 	//}
-	// }
 
 	monitoring.CreateStopMetrics(resultdata)
 
@@ -537,57 +513,49 @@ func PrepareStopMetrics(applicationIdentifier string) *http.Response {
 
 }
 
-/*
-The function that is called when the user starts the recording
-Will every 5 seconds do the run operation, which returns some information about the current recording
-*/
 func scrapeWithInterval(command storage.StartAndStopCommand) {
 	for {
-		// select {
-		// case <-quit:
-		// 	return
-		// default:
-		// 	Operation(command.Usecase, "run", command.ApplicationIdentifier)
-		// }
+
 		if stopInterval {
 			return
 		} else {
 			Operation(command.Usecase, "run", command.ApplicationIdentifier)
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(time.Duration(scrapintervaltime) * time.Second)
 
 	}
 }
+func scrapeWithIntervalForLogin(loginusername string, password string) {
+	for {
 
+		if stopInterval {
+			return
+		} else {
+			getAuthToken(loginusername, password)
+
+		}
+
+		time.Sleep(3600 * time.Second)
+
+	}
+}
 func scrapeWithIntervalforactive(command storage.StartAndStopCommand) {
 	for {
-		// select {
-		// case <-quit:
-		// 	return
-		// default:
-		// 	if !quit
-		// 	OperationWhoIsActive(command.ApplicationIdentifier)
-		// }
-		// switch {
-		// case <-quit:
-		// 	return
-		// default:
-
-		// }
 
 		if stopInterval {
 			return
 		} else {
 			OperationWhoIsActive(command.ApplicationIdentifier)
 		}
-		time.Sleep(5 * time.Second)
+
+		time.Sleep(time.Duration(scrapintervaltime) * time.Second)
 
 	}
 }
 
-// Takes a username and a password and generates the string that is needed to login
+// Takes a loginusername and a password and generates the string that is needed to login
 func generateUserInfo(username string, password string) string {
 	var userInfo = "username=" + username + "&password=" + password + "&grant_type=password"
-
+	fmt.Println(userInfo)
 	return userInfo
 }
