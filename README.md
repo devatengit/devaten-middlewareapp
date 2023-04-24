@@ -35,8 +35,38 @@ IPv4 Address.: 192.168.1.9
 
 edit middleware.env-->
 APP_HOST="http://192.168.1.9:8081"
-
 After change verify devaten is running on this same address. http://192.168.1.9:8081
+
+LOGIN_USER_NAME="Enter Dahshboard username"
+After change verify devaten dashboard Username(Email).Enter correct username that you used in singn up to dashboard.
+
+PASSWORD="Enter Dashboard password"
+After change verify devaten dashboard Password.Enter correct password that you used in singn up to dashboard.
+
+
+RECORDING_MAIL="whenFailure"
+You get recording mail with status report when you do the start and stop recording.
+1. if you want get recording mail when status failure then keep it as "whenFailure".
+2. if you want get recording mail every time then keep it as "enable".
+3. if you want disabled recording mail  then keep it as "disabled".
+
+EXPLAIN_JSON="enable"
+1. if you want get EXPLAIN_JSON of your recording query when status failure then keep it as "whenFailure".
+2. if you want get EXPLAIN_JSON of your recording query every time then keep it as "enable".
+3. if you want disabled EXPLAIN_JSON of your recording query then keep it as "disabled".
+
+
+JIRA="disabled"
+1. if you configure jira configuration with devaten dashboard and you want to create ticket in your jira board when status failure then keep it as "whenFailure".
+2. if you configure jira configuration with devaten dashboard and you  want to create ticket in your jira board then keep it as "enable".
+3. if you configure jira configuration with devaten dashboard and you  dont want to create ticket in your jira board then keep it as "disabled".
+
+REPORT="enable"
+1. if you want generate report of your recording when status failure then keep it as "whenFailure".
+2. if you want generate report of your recording every time then keep it as "enable".
+3. if you want disabled generate report of your recording then keep it as "disabled".
+
+SCRAP_INTERVAL_TIME="10"
 
 2. Run
 To start program open a terminal and navigate to the folder containing the docker compose file.
@@ -55,19 +85,7 @@ The image will export Grafana on port **3000**.
 
 Once the middleware is up and running, you can do the following API calls, API calls can be made through the address-bar in the browser:
 
-### Login
 
-```
-localhost:8999/Login/{Devaten Username}/{Devaten Password}
-```
-eg
-http://localhost:8999/Login/admin@system.com/123456
-
-This call must be made as the first API call, or it will not be possible to start or stop a recording.
-
-Once you have logged in, you can start and stop recordings without having to log in again.
-
-If the image is ever shut down, you must log in again when you restart the program.
 
 ### Start Recording
 
@@ -87,7 +105,8 @@ eg. 861632a7-7fde-46a1-b62b-eae111d00115
 ### Stop Recording
 
 ```
-localhost:8999/Start/{Usecase name}/{Application Identifier}
+
+
 ```
 http://localhost:8999/Stop/getCustomer/861632a7-7fde-46a1-b62b-eae111d00115
 

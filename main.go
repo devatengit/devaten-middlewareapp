@@ -126,7 +126,7 @@ func startRecording(c *gin.Context) {
 
 	} else {
 
-		c.JSON(loginresponse, gin.H{"Control": "Login fail. Check username and password or dashborad app ip address."})
+		c.JSON(loginresponse, gin.H{"Control": "Login fail. Please enter correct devaten dashboard username and password or host url in middleware.env fie.."})
 	}
 
 	// Starts the scraping on a seperat thread
@@ -183,7 +183,7 @@ func getAuthToken(loginusername string, password string) *http.Response {
 		}
 	}
 	defer res.Body.Close()
-
+	loginresponse = res.StatusCode
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -201,7 +201,6 @@ func getAuthToken(loginusername string, password string) *http.Response {
 	}
 
 	fmt.Printf("%s : %s\n", Tokenresponse.Type, Tokenresponse.AccessToken)
-	loginresponse = res.StatusCode
 
 	fmt.Println("******************************************** Auth Token ********************************************")
 
