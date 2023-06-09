@@ -365,85 +365,88 @@ func WhoIsActive(body []byte) {
 	//starttimestamp = starttimestampdata
 	if !(len(runinfo) == 0) {
 		for key1, val1 := range runinfo {
-			//for _, active := range val1.Array() {
+			//for _, active := range val1.Array() {()
 			justString := GetPrometheusRegisteredMetrics()
-			for key := range val1.Array()[0].Map() {
-				//fmt.Print(" ", val)
+			if !(len(val1.Array()) == 0) {
+				for key := range val1.Array()[0].Map() {
+					//fmt.Print(" ", val)
 
-				if !strings.Contains(key, "LABEL_") {
-					fmt.Println(key1)
-					registered := strings.Contains(justString, "WHOISACTIVE_"+strings.ToUpper(key))
-					if !registered {
-						whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)] = prometheus.NewGaugeVec(
-							prometheus.GaugeOpts{
-								Name: "WHOISACTIVE_" + strings.ToUpper(key),
-								Help: "",
-							}, []string{
-								"SQL",
-								"DatabaseUser",
-								"Connection_ID",
-								"DBName",
-								"HostName",
-								"LAST_ACTION_TIME",
-								"Application",
-								"Statement_status",
-								"Last_action",
-								"QueryId",
-								"WaitType",
-								"BlockedByConnectionID",
-								"idNum",
-								"usecase",
-							},
-						)
-						prometheus.MustRegister(
-							whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)],
-						)
+					if !strings.Contains(key, "LABEL_") {
+						fmt.Println(key1)
+						registered := strings.Contains(justString, "WHOISACTIVE_"+strings.ToUpper(key))
+						if !registered {
+							whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)] = prometheus.NewGaugeVec(
+								prometheus.GaugeOpts{
+									Name: "WHOISACTIVE_" + strings.ToUpper(key),
+									Help: "",
+								}, []string{
+									"SQL",
+									"DatabaseUser",
+									"Connection_ID",
+									"DBName",
+									"HostName",
+									"LAST_ACTION_TIME",
+									"Application",
+									"Statement_status",
+									"Last_action",
+									"QueryId",
+									"WaitType",
+									"BlockedByConnectionID",
+									"idNum",
+									"usecase",
+								},
+							)
+							prometheus.MustRegister(
+								whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)],
+							)
 
+						}
 					}
 				}
-			}
 
-			//}
+			}
 			fmt.Println()
 		}
 		for key1, val1 := range runinfo {
 			fmt.Print(key1)
-			for _, active := range val1.Array() {
-				var activedata = active.Map()
-				LABEL_SQL, ok := activedata["LABEL_SQL"]
-				fmt.Print(ok)
-				LABEL_DATABASEUSER, ok := activedata["LABEL_DATABASEUSER"]
-				fmt.Print(ok)
-				LABEL_CONNECTION_ID, ok := activedata["LABEL_CONNECTION_ID"]
-				fmt.Print(ok)
-				LABEL_DBNAME, ok := activedata["LABEL_DBNAME"]
-				fmt.Print(ok)
-				LABEL_HOSTNAME, ok := activedata["LABEL_HOSTNAME"]
-				fmt.Print(ok)
-				LABEL_LAST_ACTION_TIME, ok := activedata["LABEL_LAST_ACTION_TIME"]
-				fmt.Print(ok)
+			if !(len(val1.Array()) == 0) {
+				for _, active := range val1.Array() {
+					var activedata = active.Map()
+					LABEL_SQL, ok := activedata["LABEL_SQL"]
+					fmt.Print(ok)
+					LABEL_DATABASEUSER, ok := activedata["LABEL_DATABASEUSER"]
+					fmt.Print(ok)
+					LABEL_CONNECTION_ID, ok := activedata["LABEL_CONNECTION_ID"]
+					fmt.Print(ok)
+					LABEL_DBNAME, ok := activedata["LABEL_DBNAME"]
+					fmt.Print(ok)
+					LABEL_HOSTNAME, ok := activedata["LABEL_HOSTNAME"]
+					fmt.Print(ok)
+					LABEL_LAST_ACTION_TIME, ok := activedata["LABEL_LAST_ACTION_TIME"]
+					fmt.Print(ok)
 
-				LABEL_APPLICATION, ok := activedata["LABEL_APPLICATION"]
-				fmt.Print(ok)
+					LABEL_APPLICATION, ok := activedata["LABEL_APPLICATION"]
+					fmt.Print(ok)
 
-				LABEL_STATEMENT_STATUS, ok := activedata["LABEL_STATEMENT_STATUS"]
-				fmt.Print(ok)
+					LABEL_STATEMENT_STATUS, ok := activedata["LABEL_STATEMENT_STATUS"]
+					fmt.Print(ok)
 
-				LABEL_LAST_ACTION, ok := activedata["LABEL_LAST_ACTION"]
-				fmt.Print(ok)
+					LABEL_LAST_ACTION, ok := activedata["LABEL_LAST_ACTION"]
+					fmt.Print(ok)
 
-				LABEL_QUERYID, ok := activedata["LABEL_QUERYID"]
-				fmt.Print(ok)
+					LABEL_QUERYID, ok := activedata["LABEL_QUERYID"]
+					fmt.Print(ok)
 
-				LABEL_WAITTYPE, ok := activedata["LABEL_WAITTYPE"]
-				fmt.Print(ok)
+					LABEL_WAITTYPE, ok := activedata["LABEL_WAITTYPE"]
+					fmt.Print(ok)
 
-				LABEL_BLOCKEDBYCONNECTIONID, ok := activedata["LABEL_BLOCKEDBYCONNECTIONID"]
-				fmt.Print(ok)
+					LABEL_BLOCKEDBYCONNECTIONID, ok := activedata["LABEL_BLOCKEDBYCONNECTIONID"]
+					fmt.Print(ok)
 
-				for key, val := range active.Map() {
-					if !strings.Contains(key, "LABEL_") {
-						whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)].With(prometheus.Labels{"SQL": LABEL_SQL.String(), "DatabaseUser": LABEL_DATABASEUSER.String(), "Connection_ID": LABEL_CONNECTION_ID.String(), "DBName": LABEL_DBNAME.String(), "HostName": LABEL_HOSTNAME.String(), "LAST_ACTION_TIME": LABEL_LAST_ACTION_TIME.String(), "Application": LABEL_STATEMENT_STATUS.String(), "Statement_status": LABEL_APPLICATION.String(), "Last_action": LABEL_LAST_ACTION.String(), "QueryId": LABEL_QUERYID.String(), "WaitType": LABEL_WAITTYPE.String(), "BlockedByConnectionID": LABEL_BLOCKEDBYCONNECTIONID.String(), "idNum": idnum, "usecase": usecaseId}).Set(val.Float())
+					for key, val := range active.Map() {
+						if !strings.Contains(key, "LABEL_") {
+							whoisacticemetrics["WHOISACTIVE_"+strings.ToUpper(key)].With(prometheus.Labels{"SQL": LABEL_SQL.String(), "DatabaseUser": LABEL_DATABASEUSER.String(), "Connection_ID": LABEL_CONNECTION_ID.String(), "DBName": LABEL_DBNAME.String(), "HostName": LABEL_HOSTNAME.String(), "LAST_ACTION_TIME": LABEL_LAST_ACTION_TIME.String(), "Application": LABEL_STATEMENT_STATUS.String(), "Statement_status": LABEL_APPLICATION.String(), "Last_action": LABEL_LAST_ACTION.String(), "QueryId": LABEL_QUERYID.String(), "WaitType": LABEL_WAITTYPE.String(), "BlockedByConnectionID": LABEL_BLOCKEDBYCONNECTIONID.String(), "idNum": idnum, "usecase": usecaseId}).Set(val.Float())
+						}
 					}
 				}
 			}
