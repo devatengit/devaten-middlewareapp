@@ -5,6 +5,7 @@ datasources:
     type: prometheus
     access: proxy
     orgId: 1
+    #Enter your Server IP address
     url: http://host.docker.internal:9090
     basicAuth: false
     isDefault: true

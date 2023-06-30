@@ -1,0 +1,4 @@
+# Click on this link -   https://bcrypt-generator.com/  enteryour password there and copy bcrypted password and past below.
+basic_auth_users:
+  devaten: $2a$12$4QKRlKsw43NIYKyEH0RBpe1ZiziWmNGMIaCezCZEtP25ltO7SNpWG
+ #devaten is username and password is bcrypted one. 
