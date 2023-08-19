@@ -1,4 +1,53 @@
 {
+	"__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.5.3"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph (old)",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -59,7 +108,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "start time of the process",
       "fieldConfig": {
@@ -123,7 +172,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "DBINSTANCE_DB_SIZE_GB{database=\"$database\",databaseName=\"$databaseName\",idNum=\"$idNum\",usecase=\"$usecase\"}",
@@ -140,7 +189,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -203,7 +252,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "DBINSTANCE_NUMBEROFSESSIONS{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -219,7 +268,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -282,7 +331,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "DBINSTANCE_ACTIVEUSERSESSIONS{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -298,7 +347,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -362,7 +411,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "DBINSTANCE_PERCENTOFMAXSESSIONS{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -379,7 +428,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -442,7 +491,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "DBINSTANCE_PERCENTOFMAXOPENCURSORS{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -458,7 +507,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -521,7 +570,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "DBINSTANCE_BUFFERCACHEHITRATIO{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -538,7 +587,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -601,7 +650,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "DBINSTANCE_CURSORCACHEHITRATIO{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -617,7 +666,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -680,7 +729,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "DBINSTANCE_LIBRARYCACHEHITRATIO{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -700,7 +749,7 @@
       "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Virtual and Resident memory size in bytes, averages over 5 min interval",
       "fieldConfig": {
@@ -749,7 +798,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg(rate(process_resident_memory_bytes[5m]))",
@@ -762,7 +811,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg(rate(process_virtual_memory_bytes[5m]))",
@@ -810,7 +859,7 @@
       "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Average user and system CPU time spent in seconds.",
       "fieldConfig": {
@@ -859,7 +908,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg(rate(process_cpu_seconds_total[5m]) * 1000)",
@@ -907,7 +956,7 @@
       "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Number of open file descriptors",
       "fieldConfig": {
@@ -956,7 +1005,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "process_open_fds",
@@ -1000,7 +1049,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1087,7 +1136,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_EXECUTIONS_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -1104,7 +1153,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1191,7 +1240,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_ELAPSED_TIME_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -1208,7 +1257,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1319,7 +1368,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_RUNTIME_MEM_ORACLE{database=\"$database\", databaseName=\"$databaseName\", usecase=\"$usecase\", idNum=\"$idNum\"}",
@@ -1337,7 +1386,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1424,7 +1473,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_RUNTIME_MEM_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -1440,7 +1489,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1527,7 +1576,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_SHARABLE_MEM_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -1543,7 +1592,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1804,7 +1853,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1819,7 +1868,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "WHOISACTIVE_CPU_TIME",
@@ -1832,7 +1881,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "WHOISACTIVE_TOTALPHYIO_MB",
@@ -1845,7 +1894,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "WHOISACTIVE_SECONDS_IN_WAIT",
@@ -1900,7 +1949,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1988,7 +2037,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_DISK_READS_ORACLE{database=\"$database\", databaseName=\"$databaseName\", usecase=\"$usecase\", idNum=\"$idNum\"}",
@@ -2000,7 +2049,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_FETCHES_ORACLE{database=\"$database\", databaseName=\"$databaseName\", usecase=\"$usecase\", idNum=\"$idNum\"} != 0",
@@ -2012,7 +2061,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_LOADS_ORACLE{database=\"$database\", databaseName=\"$databaseName\", usecase=\"$usecase\", idNum=\"$idNum\"}",
@@ -2028,7 +2077,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "\t\nDisplays the connection status:\n\nRUNNING\nA statement is executing.\n\nIDLE\nNo statements are currently executing on this connection.\n\nQUEUING\nThe connection is currently queued. The status changes to RUNNING when it is dequeued (this depends on the system's resource consumption).\n\nEMPTY\nA historic connection that is removed after 1 hour. The removal time can be configured in indexserver.ini [session] connection_history_lifetime = 60 # minutes.",
       "fieldConfig": {
@@ -2115,7 +2164,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_USERCOMMITS_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -2128,7 +2177,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_ROLLBACKS_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -2146,7 +2195,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -2233,7 +2282,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg(WHOISACTIVE_ELAPSED_TIME)",
@@ -2250,7 +2299,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -2337,7 +2386,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg(WHOISACTIVE_CPU_TIME)",
@@ -2354,7 +2403,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2445,7 +2494,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_USER_IO_WAIT_TIME_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -2461,7 +2510,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2552,7 +2601,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_APPLICATION_WAIT_TIME_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -2568,7 +2617,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Latest start & stop recording used tables",
       "fieldConfig": {
@@ -2635,7 +2684,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -2650,7 +2699,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -2665,7 +2714,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -2727,7 +2776,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2814,7 +2863,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_PHYSICAL_READ_BYTES_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -2830,7 +2879,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -2916,7 +2965,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_PHYSICAL_READ_REQUESTS_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -2958,7 +3007,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3046,7 +3095,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_PHYSICAL_WRITE_BYTES_ORACLE{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -3062,7 +3111,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3148,7 +3197,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_PHYSICAL_WRITE_REQUESTS_ORACLE {database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -3160,7 +3209,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "RUN_LOGWRITETHROUGHPUTMB{database=\"$database\",databaseName=\"$databaseName\",usecase=\"$usecase\",idNum=\"$idNum\"}",
@@ -3189,7 +3238,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Latest start & stop recording queries for selected usecase",
       "fieldConfig": {
@@ -3314,7 +3363,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "MOSTEXECUTE_EXECCOUNT_MSSQL {database=\"$database\",databaseName=\"$databaseName\",idNum=\"$idNum\"} !=0",
@@ -3327,7 +3376,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "MOSTEXECUTE_TOTAL_ELAPSED_TIME_MSSQL {database=\"$database\",databaseName=\"$databaseName\",idNum=\"$idNum\"} !=0",
@@ -3340,7 +3389,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "MOSTEXECUTE_LAST_LOGICAL_READS_MSSQL {database=\"$database\",databaseName=\"$databaseName\",idNum=\"$idNum\"} !=0",
@@ -3382,7 +3431,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3464,7 +3513,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -3482,7 +3531,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Latest start & stop recording queries for selected use case",
       "fieldConfig": {
@@ -3595,7 +3644,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -3610,7 +3659,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -3625,7 +3674,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -3667,7 +3716,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3749,7 +3798,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -3863,7 +3912,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(DBINSTANCE_ID_NUM,database)",
         "description": "Application database",
@@ -3895,7 +3944,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(DBINSTANCE_ID_NUM,usecase)",
         "description": "Devaten start & stop business use case name",
@@ -3927,7 +3976,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(DBINSTANCE_ID_NUM,idNum)",
         "description": "Devaten start & stop business run ID",
@@ -3959,7 +4008,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(DBINSTANCE_ID_NUM,databaseName)",
         "description": "Application database",
@@ -3991,7 +4040,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(DBINSTANCE_ID_NUM,starttimestamp)",
         "description": "Run starttimestamp",
