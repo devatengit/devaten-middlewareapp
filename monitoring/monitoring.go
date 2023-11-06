@@ -15,34 +15,35 @@ import (
 )
 
 var (
-	dbinstancemetrics    = make(map[string]*prometheus.GaugeVec)
-	stopmetrics          = make(map[string]*prometheus.GaugeVec)
-	runmetrics           = make(map[string]*prometheus.GaugeVec)
-	mostexecutedmetrics  = make(map[string]*prometheus.GaugeVec)
-	worstexecutedmetrics = make(map[string]*prometheus.GaugeVec)
-	tableanalysismetrics = make(map[string]*prometheus.GaugeVec)
-	whoisacticemetrics   = make(map[string]*prometheus.GaugeVec)
-	usecaseidentifiers   string
-	appclassname         string
-	appipaddress         string
-	appmethodname        string
-	databasetype         string
-	databasename         string
-	starttimestamp       string
-	idnum                string
-	usecaseId            string
-	usecasestopmetrics   = make(map[string]interface{})
-	stopdetails          []storage.Stop
-	reportdata           []storage.ReportData
+	dbinstancemetrics     = make(map[string]*prometheus.GaugeVec)
+	stopmetrics           = make(map[string]*prometheus.GaugeVec)
+	runmetrics            = make(map[string]*prometheus.GaugeVec)
+	mostexecutedmetrics   = make(map[string]*prometheus.GaugeVec)
+	worstexecutedmetrics  = make(map[string]*prometheus.GaugeVec)
+	tableanalysismetrics  = make(map[string]*prometheus.GaugeVec)
+	whoisacticemetrics    = make(map[string]*prometheus.GaugeVec)
+	usecaseidentifiers    string
+	appclassname          string
+	appipaddress          string
+	appmethodname         string
+	databasetype          string
+	databasename          string
+	starttimestamp        string
+	idnum                 string
+	usecaseId             string
+	prometheusmatricsport string
+	usecasestopmetrics    = make(map[string]interface{})
+	stopdetails           []storage.Stop
+	reportdata            []storage.ReportData
 )
 
 func Monitor() {
 	go http.Handle("/metrics", promhttp.Handler())
-	err := http.ListenAndServe(":9091", nil)
+	err := http.ListenAndServe(":"+prometheusmatricsport, nil)
 	if err != nil {
 		log.Fatalln("Failed to serve metrics on port 9091 ")
 	}
-	log.Fatal(http.ListenAndServe(":9091", nil))
+	log.Fatal(http.ListenAndServe(":"+prometheusmatricsport, nil))
 }
 
 func ParseBody(body []byte, action string) {

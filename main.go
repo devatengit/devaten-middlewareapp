@@ -32,16 +32,19 @@ var (
 		Instantiated when a user calls the login API call.
 		Contains the authentication token
 	*/
-	Tokenresponse     storage.Token
-	appurl                  = ""
-	recordingmail           = ""
-	explainjson             = ""
-	jira                    = ""
-	report                  = ""
-	loginusername           = ""
-	password                = ""
-	loginresponse           = 0
-	scrapintervaltime int64 = 5
+	Tokenresponse         storage.Token
+	appurl                      = ""
+	recordingmail               = ""
+	explainjson                 = ""
+	jira                        = ""
+	report                      = ""
+	loginusername               = ""
+	password                    = ""
+	loginresponse               = 0
+	scrapintervaltime     int64 = 5
+	middlewareport              = ""
+	prometheusmatricsport       = ""
+
 	/*
 		Closes the goroutine that scrapes the recording.
 		The goroutine is started when the user starts the recording
@@ -65,6 +68,10 @@ func main() {
 	jira = jirae
 	reporte := os.Getenv("REPORT")
 	report = reporte
+	middlewareporte := os.Getenv("MIDDLEWARE_PORT")
+	middlewareport = middlewareporte
+	prometheusmatricsporte := os.Getenv("PROMETHEUS_MATRICS_PORT")
+	prometheusmatricsport = prometheusmatricsporte
 
 	userdata := os.Getenv("LOGIN_USER_NAME")
 	loginusername = userdata
@@ -88,7 +95,7 @@ func main() {
 	router.GET("/Stop/:Usecase/:Appiden", stopRecording)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	err1 := router.Run(":8999")
+	err1 := router.Run(":" + middlewareport)
 	if err1 != nil {
 		return
 	}
